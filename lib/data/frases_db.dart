@@ -1,4 +1,6 @@
 import 'package:sqflite/sqflite.dart';
+import 'package:path/path.dart';
+import 'package:frasesapp/models/frase.dart';
 
 class FrasesDb {
   FrasesDb._();
@@ -14,7 +16,7 @@ class FrasesDb {
 
   Future<Database> _abrir() async {
     final ruta = join(await getDatabasesPath(), _nombreArchivo);
-    return OpenDatabase(
+    return openDatabase(
       ruta,
       version: 1,
       onCreate: (db, version) async {
@@ -39,5 +41,8 @@ autor TEXT NOT NULL
     );
   }
 
-  Future<int> eliminar(int id)
+  Future<int> eliminar(int id) async {
+    final db = await _database;
+    return db.delete(_tabla, where: 'id = ?', whereArgs: [id]);
+  }
 }
